@@ -35,7 +35,7 @@ textarea {
   height: 300px;
   margin-top: 20px;
 }
-.firework { width:10px; height:10px; background:yellow; border-radius:50%; position:absolute; animation:firework 1s linear infinite;}
+.firework { width:10px; height:10px; border-radius:50%; position:absolute; animation:firework 1s linear infinite;}
 @keyframes firework {
   0% {transform: translateY(0) scale(1); opacity:1;}
   50% {transform: translateY(-150px) scale(1.5); opacity:0.7;}
@@ -164,7 +164,7 @@ function showFinal(){
   document.getElementById("finalBtn").onclick = function() {
     let msg = answers.map(a => `Q: ${a.q}\nA: ${a.a}`).join("\n\n");
     emailjs.send("service_51qmn4e", "template_j1f79kf", {
-      to_email: "dhunganaayush9@gmail.com", // Replace with your email
+      to_email: "dhunganaayush9@gmail.com", // Your email
       message: msg
     }).then(function(){
       alert("All answers sent! 💌");

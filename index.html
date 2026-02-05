@@ -5,70 +5,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine Surprise 💖</title>
 <style>
-  body {
-    font-family: Arial;
-    text-align: center;
-    background: #ffe6eb;
-    padding: 25px;
-    margin: 0;
-  }
-  button {
-    padding: 12px 22px;
-    margin: 8px;
-    font-size: 17px;
-    border: none;
-    border-radius: 10px;
-    background: #ff4d6d;
-    color: white;
-    cursor: pointer;
-  }
-  textarea {
-    width: 85%;
-    height: 80px;
-    font-size: 16px;
-    padding: 10px;
-    margin: 10px 0;
-  }
-  table {
-    margin: 20px auto;
-    border-collapse: collapse;
-  }
-  td, th {
-    border: 1px solid #ff4d6d;
-    padding: 8px 12px;
-  }
-  #finalScreen { display:none; }
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #ffe6eb;
+  padding: 20px;
+  margin: 0;
+}
+button {
+  padding: 12px 22px;
+  margin: 8px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background: #ff4d6d;
+  color: white;
+  cursor: pointer;
+}
+textarea {
+  width: 85%;
+  height: 70px;
+  font-size: 16px;
+  padding: 10px;
+  margin: 10px 0;
+}
+#finalScreen { display:none; }
 </style>
 </head>
 <body>
 
 <h2 id="question"></h2>
 <div id="area"></div>
+
 <div id="finalScreen">
   <h2>🎆🎈 Animations, fireworks and balloons 🎈🎆</h2>
-  <button id="marryBtn">We’ll be married soon, my love 💕</button>
-  <br><br>
-  <button onclick="showAnswers()">View All Answers</button>
-  <div id="answersTable"></div>
+  <button onclick="alert('We’ll be married soon, my love 💕')">We’ll be married soon, my love 💕</button>
 </div>
 
 <script>
 let step = 0;
 let answers = [];
 
-// Flow definition with branching & inputs
+// Positive, romantic flow
 const flow = [
-  {q:"I know, I make you angry sometimes, but you know what? You make me the happiest person alive. And as we start this day, I want to start by asking — will you be my Valentine?", o:["Yes","Definitely yes"]},
-  {q:"I love you ❤️", o:["I love you too","I love you more"]},
-  {q:"Have you changed your mind yet?", o:["Not yet","I am changing slowly… slowly… going slowly… not yet"], inputFor:"Not yet"},
-  {q:"Okay… I’m waiting for the day to come 💕\nHappy Rose Day, my love 🌹", o:["Happy Rose Day to you too","My rose 🌹"]},
-  {q:"I want to be with you forever. I see forever in your eyes. I promise to take care of you every single day.", o:["I'm always yours","Yeah, you sometimes make me angry, but I know you love me"]},
-  {q:"This is our first Valentine’s together, but I promise to be with you till the very end, and we’ll celebrate all the Valentine’s together. I promise.", o:["Are you sure?","I know you will be with me forever"]},
-  {branch:{
-    "Are you sure?": {msg:"I’m 100% sure — more sure than I will ever be ❤️", o:["Okay"]},
-    "I know you will be with me forever": {msg:"I know you trust me, and I trust you with all my heart. I will never break your heart ❤️", o:["🥹💖","😭❤️"]}
-  }},
-  {q:"I love you. I love you more than anything else in this world.", input:true},
+  {q:"I know I make you angry sometimes, but you make me the happiest person alive. Will you be my Valentine?", o:["Yes ❤️","Definitely yes 💖"]},
+  {q:"I love you so much ❤️", o:["I love you too 💕","I love you even more 💞"]},
+  {q:"Happy Rose Day 🌹! How do I make you feel special today?", o:["You already do! 💖","Every day is magical with you ✨"]},
+  {q:"Which moment with me made you happiest?", input:true},
+  {q:"Do you feel loved when I hold your hand?", o:["Always 💕","Every time ❤️"]},
+  {q:"Which song reminds you of us?", input:true},
+  {q:"Do you remember our first date? How did it feel?", input:true},
+  {q:"I want to promise you something today… should I?", o:["Yes, promise me 💖","Of course, my love 💕"]},
+  {q:"I promise to always support you. Do you trust me?", o:["Always 💕","100% ❤️"]},
+  {q:"Which of my habits makes you smile the most?", input:true},
+  {q:"Do you see us together forever?", o:["Forever and always 💖","Yes, every day ❤️"]},
+  {q:"If I could grant you one wish today, what would it be?", input:true},
+  {q:"Do you feel my love every single day?", o:["Always 💕","Every day ❤️"]},
+  {q:"Do you know how special you are to me?", o:["Yes 💖","I feel it every day 💕"]},
+  {q:"What is one thing you love most about me?", input:true},
+  {q:"Do you see us celebrating every Valentine’s together?", o:["Yes, every Valentine’s 💖","Forever together ❤️"]},
+  {q:"How would you describe our love in one word?", input:true},
+  {q:"Do you feel proud to be with me?", o:["Yes ❤️","Every single day 💕"]},
+  {q:"I love you more than anything… do you feel the same?", o:["Yes ❤️","Even more 💖"]},
+  {q:"Do you secretly enjoy it when I tease you?", o:["Yes 😄","A little 😘"]},
+  {q:"What’s the funniest memory we share?", input:true},
+  {q:"If we could travel anywhere together, where would you go?", input:true},
+  {q:"Do you feel safe and loved with me?", o:["Always 💕","Every moment ❤️"]},
+  {q:"Do you know I see forever in your eyes?", o:["Yes 💖","Every time 💕"]},
+  {q:"I love holding you close… do you like it too?", o:["Yes 💕","Of course ❤️"]},
   {q:"Last question… will you marry me?", input:true}
 ];
 
@@ -77,39 +81,23 @@ function render(){
   let f = flow[step];
   document.getElementById("area").innerHTML = "";
 
-  // Branch step
-  if(f.branch){
-    let last = answers[answers.length-1];
-    let b = f.branch[last];
-    if(!b){ alert("Error: No branch found for last answer!"); return; }
-    document.getElementById("question").innerText = b.msg;
-    showOptions(b.o);
-    return;
-  }
-
-  document.getElementById("question").innerText = f.q;
-
-  if(f.o){
-    showOptions(f.o);
-  } else if(f.input || f.inputFor){
+  if(f.o){ // Options
+    document.getElementById("question").innerText = f.q;
+    f.o.forEach(x=>{
+      let b = document.createElement("button");
+      b.innerText = x;
+      b.onclick = ()=>choose(x);
+      document.getElementById("area").appendChild(b);
+    });
+  } else if(f.input){ // Typed input
+    document.getElementById("question").innerText = f.q;
     document.getElementById("area").innerHTML = `<textarea id="txt" placeholder="Write your reply here"></textarea><br><button onclick="submitInput()">Submit</button>`;
   }
 }
 
-// Show buttons for options
-function showOptions(opts){
-  let a = document.getElementById("area");
-  opts.forEach(x=>{
-    let b = document.createElement("button");
-    b.innerText = x;
-    b.onclick = ()=>choose(x);
-    a.appendChild(b);
-  });
-}
-
 // Handle option click
 function choose(ans){
-  answers.push(ans);
+  answers.push({q: flow[step].q, a: ans});
   step++;
   if(step < flow.length) render();
   else showFinal();
@@ -119,32 +107,23 @@ function choose(ans){
 function submitInput(){
   let v = document.getElementById("txt").value.trim();
   if(!v){ alert("Please write something! ❤️"); return; }
-  answers.push(v);
+  answers.push({q: flow[step].q, a: v});
   step++;
   if(step < flow.length) render();
   else showFinal();
 }
 
-// Final screen with animations and buttons
+// Final celebration screen
 function showFinal(){
   document.getElementById("question").style.display="none";
   document.getElementById("area").style.display="none";
-  let f = document.getElementById("finalScreen");
-  f.style.display="block";
-  document.getElementById("marryBtn").onclick = ()=>alert("Session ended. All answers are recorded!");
+  document.getElementById("finalScreen").style.display="block";
+
+  // You can access all answers here via the array `answers`
+  console.log(answers); // For testing in browser console
 }
 
-// Show all answers in a neat table
-function showAnswers(){
-  let table = `<table><tr><th>Step</th><th>Answer</th></tr>`;
-  answers.forEach((a,i)=>{ table += `<tr><td>${i+1}</td><td>${a}</td></tr>`; });
-  table += `</table>`;
-  document.getElementById("answersTable").innerHTML = table;
-}
-
-// Render first question immediately
 window.onload = render;
 </script>
-
 </body>
 </html>

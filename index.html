@@ -76,17 +76,23 @@ const flow = [
 function render(){
   let f = flow[step];
   document.getElementById("area").innerHTML = "";
+
+  // Branch step
   if(f.branch){
     let last = answers[answers.length-1];
     let b = f.branch[last];
+    if(!b){ alert("Error: No branch found for last answer!"); return; }
     document.getElementById("question").innerText = b.msg;
     showOptions(b.o);
-  } else {
-    document.getElementById("question").innerText = f.q;
-    if(f.o) showOptions(f.o);
-    else if(f.input || f.inputFor){
-      document.getElementById("area").innerHTML = `<textarea id="txt" placeholder="Write your reply here"></textarea><br><button onclick="submitInput()">Submit</button>`;
-    }
+    return;
+  }
+
+  document.getElementById("question").innerText = f.q;
+
+  if(f.o){
+    showOptions(f.o);
+  } else if(f.input || f.inputFor){
+    document.getElementById("area").innerHTML = `<textarea id="txt" placeholder="Write your reply here"></textarea><br><button onclick="submitInput()">Submit</button>`;
   }
 }
 
@@ -110,3 +116,35 @@ function choose(ans){
 }
 
 // Handle typed input
+function submitInput(){
+  let v = document.getElementById("txt").value.trim();
+  if(!v){ alert("Please write something! ❤️"); return; }
+  answers.push(v);
+  step++;
+  if(step < flow.length) render();
+  else showFinal();
+}
+
+// Final screen with animations and buttons
+function showFinal(){
+  document.getElementById("question").style.display="none";
+  document.getElementById("area").style.display="none";
+  let f = document.getElementById("finalScreen");
+  f.style.display="block";
+  document.getElementById("marryBtn").onclick = ()=>alert("Session ended. All answers are recorded!");
+}
+
+// Show all answers in a neat table
+function showAnswers(){
+  let table = `<table><tr><th>Step</th><th>Answer</th></tr>`;
+  answers.forEach((a,i)=>{ table += `<tr><td>${i+1}</td><td>${a}</td></tr>`; });
+  table += `</table>`;
+  document.getElementById("answersTable").innerHTML = table;
+}
+
+// Render first question immediately
+window.onload = render;
+</script>
+
+</body>
+</html>

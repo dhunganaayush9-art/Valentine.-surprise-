@@ -30,6 +30,17 @@ textarea {
   margin: 10px 0;
 }
 #finalScreen { display:none; }
+.fireworks {
+  position: relative;
+  height: 300px;
+  margin-top: 20px;
+}
+.firework { width:10px; height:10px; background:yellow; border-radius:50%; position:absolute; animation:firework 1s linear infinite;}
+@keyframes firework {
+  0% {transform: translateY(0) scale(1); opacity:1;}
+  50% {transform: translateY(-150px) scale(1.5); opacity:0.7;}
+  100% {transform: translateY(0) scale(1); opacity:0;}
+}
 </style>
 </head>
 <body>
@@ -39,14 +50,19 @@ textarea {
 
 <div id="finalScreen">
   <h2>🎆🎈 Animations, fireworks and balloons 🎈🎆</h2>
-  <button onclick="alert('We’ll be married soon, my love 💕')">We’ll be married soon, my love 💕</button>
+  <div class="fireworks" id="fireworksContainer"></div>
+  <button id="finalBtn">oiii 💖</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
+// Initialize EmailJS
+emailjs.init("rUUSQnZwQQibgwoxL"); // Your Public API Key
+
 let step = 0;
 let answers = [];
 
-// Positive, romantic flow
+// Flow with preset + text input for multiple-choice questions
 const flow = [
   {q:"I know I make you angry sometimes, but you make me the happiest person alive. Will you be my Valentine?", o:["Yes ❤️","Definitely yes 💖"]},
   {q:"I love you so much ❤️", o:["I love you too 💕","I love you even more 💞"]},
@@ -76,12 +92,12 @@ const flow = [
   {q:"Last question… will you marry me?", input:true}
 ];
 
-// Render current step
+// Render current question
 function render(){
   let f = flow[step];
   document.getElementById("area").innerHTML = "";
 
-  if(f.o){ // Options
+  if(f.o){ // Buttons
     document.getElementById("question").innerText = f.q;
     f.o.forEach(x=>{
       let b = document.createElement("button");
@@ -89,13 +105,18 @@ function render(){
       b.onclick = ()=>choose(x);
       document.getElementById("area").appendChild(b);
     });
-  } else if(f.input){ // Typed input
+    // Third option: custom input
+    let inputDiv = document.createElement("div");
+    inputDiv.innerHTML = `<textarea id="customInput" placeholder="Or type your answer here 💌"></textarea><br><button onclick="submitCustom()">Submit</button>`;
+    document.getElementById("area").appendChild(inputDiv);
+
+  } else if(f.input){ // Text input only
     document.getElementById("question").innerText = f.q;
-    document.getElementById("area").innerHTML = `<textarea id="txt" placeholder="Write your reply here"></textarea><br><button onclick="submitInput()">Submit</button>`;
+    document.getElementById("area").innerHTML = `<textarea id="txt" placeholder="Write your reply here 💌"></textarea><br><button onclick="submitInput()">Submit</button>`;
   }
 }
 
-// Handle option click
+// Choose button option
 function choose(ans){
   answers.push({q: flow[step].q, a: ans});
   step++;
@@ -103,24 +124,54 @@ function choose(ans){
   else showFinal();
 }
 
-// Handle typed input
+// Submit typed input
 function submitInput(){
   let v = document.getElementById("txt").value.trim();
-  if(!v){ alert("Please write something! ❤️"); return; }
+  if(!v){ alert("Please write something! 💖"); return; }
   answers.push({q: flow[step].q, a: v});
   step++;
   if(step < flow.length) render();
   else showFinal();
 }
 
-// Final celebration screen
+// Submit custom input from multiple-choice
+function submitCustom(){
+  let v = document.getElementById("customInput").value.trim();
+  if(!v){ alert("Please write something! 💌"); return; }
+  answers.push({q: flow[step].q, a: v});
+  step++;
+  if(step < flow.length) render();
+  else showFinal();
+}
+
+// Show final screen
 function showFinal(){
   document.getElementById("question").style.display="none";
   document.getElementById("area").style.display="none";
   document.getElementById("finalScreen").style.display="block";
 
-  // You can access all answers here via the array `answers`
-  console.log(answers); // For testing in browser console
+  // Fireworks animation
+  const fw = document.getElementById("fireworksContainer");
+  for(let i=0;i<20;i++){
+    let dot = document.createElement("div");
+    dot.className = "firework";
+    dot.style.left = Math.random()*90+"%";
+    dot.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
+    fw.appendChild(dot);
+  }
+
+  // Send email on final button
+  document.getElementById("finalBtn").onclick = function() {
+    let msg = answers.map(a => `Q: ${a.q}\nA: ${a.a}`).join("\n\n");
+    emailjs.send("service_51qmn4e", "template_valentine", {
+      to_email: "your.email@example.com", // Replace with your email
+      message: msg
+    }).then(function(){
+      alert("All answers sent! 💌");
+    }, function(error){
+      alert("Oops, something went wrong: " + JSON.stringify(error));
+    });
+  };
 }
 
 window.onload = render;

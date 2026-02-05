@@ -164,7 +164,7 @@ function showFinal(){
   document.getElementById("finalBtn").onclick = function() {
     let msg = answers.map(a => `Q: ${a.q}\nA: ${a.a}`).join("\n\n");
     emailjs.send("service_51qmn4e", "template_valentine", {
-      to_email: "your.email@example.com", // Replace with your email
+      to_email: "dhunganaayush9@gmail.com", // Replace with your email
       message: msg
     }).then(function(){
       alert("All answers sent! 💌");

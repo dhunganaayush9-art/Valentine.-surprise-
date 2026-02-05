@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Surprise 💖</title>
+<style>
+  body {
+    font-family: Arial;
+    text-align: center;
+    background: #ffe6eb;
+    padding: 25px;
+    margin: 0;
+  }
+  button {
+    padding: 12px 22px;
+    margin: 8px;
+    font-size: 17px;
+    border: none;
+    border-radius: 10px;
+    background: #ff4d6d;
+    color: white;
+    cursor: pointer;
+  }
+  textarea {
+    width: 85%;
+    height: 80px;
+    font-size: 16px;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  table {
+    margin: 20px auto;
+    border-collapse: collapse;
+  }
+  td, th {
+    border: 1px solid #ff4d6d;
+    padding: 8px 12px;
+  }
+  #finalScreen { display:none; }
+</style>
+</head>
+<body>
+
+<h2 id="question"></h2>
+<div id="area"></div>
+<div id="finalScreen">
+  <h2>🎆🎈 Animations, fireworks and balloons 🎈🎆</h2>
+  <button id="marryBtn">We’ll be married soon, my love 💕</button>
+  <br><br>
+  <button onclick="showAnswers()">View All Answers</button>
+  <div id="answersTable"></div>
+</div>
+
+<script>
+let step = 0;
+let answers = [];
+
+// Flow definition with branching & inputs
+const flow = [
+  {q:"I know, I make you angry sometimes, but you know what? You make me the happiest person alive. And as we start this day, I want to start by asking — will you be my Valentine?", o:["Yes","Definitely yes"]},
+  {q:"I love you ❤️", o:["I love you too","I love you more"]},
+  {q:"Have you changed your mind yet?", o:["Not yet","I am changing slowly… slowly… going slowly… not yet"], inputFor:"Not yet"},
+  {q:"Okay… I’m waiting for the day to come 💕\nHappy Rose Day, my love 🌹", o:["Happy Rose Day to you too","My rose 🌹"]},
+  {q:"I want to be with you forever. I see forever in your eyes. I promise to take care of you every single day.", o:["I'm always yours","Yeah, you sometimes make me angry, but I know you love me"]},
+  {q:"This is our first Valentine’s together, but I promise to be with you till the very end, and we’ll celebrate all the Valentine’s together. I promise.", o:["Are you sure?","I know you will be with me forever"]},
+  {branch:{
+    "Are you sure?": {msg:"I’m 100% sure — more sure than I will ever be ❤️", o:["Okay"]},
+    "I know you will be with me forever": {msg:"I know you trust me, and I trust you with all my heart. I will never break your heart ❤️", o:["🥹💖","😭❤️"]}
+  }},
+  {q:"I love you. I love you more than anything else in this world.", input:true},
+  {q:"Last question… will you marry me?", input:true}
+];
+
+// Render current step
+function render(){
+  let f = flow[step];
+  document.getElementById("area").innerHTML = "";
+  if(f.branch){
+    let last = answers[answers.length-1];
+    let b = f.branch[last];
+    document.getElementById("question").innerText = b.msg;
+    showOptions(b.o);
+  } else {
+    document.getElementById("question").innerText = f.q;
+    if(f.o) showOptions(f.o);
+    else if(f.input || f.inputFor){
+      document.getElementById("area").innerHTML = `<textarea id="txt" placeholder="Write your reply here"></textarea><br><button onclick="submitInput()">Submit</button>`;
+    }
+  }
+}
+
+// Show buttons for options
+function showOptions(opts){
+  let a = document.getElementById("area");
+  opts.forEach(x=>{
+    let b = document.createElement("button");
+    b.innerText = x;
+    b.onclick = ()=>choose(x);
+    a.appendChild(b);
+  });
+}
+
+// Handle option click
+function choose(ans){
+  answers.push(ans);
+  step++;
+  if(step < flow.length) render();
+  else showFinal();
+}
+
+// Handle typed input

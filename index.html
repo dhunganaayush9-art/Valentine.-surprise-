@@ -1,178 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine Surprise 💖</title>
-
-<style>
-body{
-  font-family: Arial, sans-serif;
-  background:#ffe6eb;
-  text-align:center;
-  padding:20px;
-  margin:0;
-}
-button{
-  padding:12px 22px;
-  margin:8px;
-  font-size:16px;
-  border:none;
-  border-radius:10px;
-  background:#ff4d6d;
-  color:white;
-  cursor:pointer;
-}
-textarea{
-  width:85%;
-  height:70px;
-  padding:10px;
-  font-size:16px;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-#finalScreen, #answersScreen{display:none;}
-.answerBox{
-  background:white;
-  padding:15px;
-  margin:10px auto;
-  border-radius:12px;
-  max-width:600px;
-  text-align:left;
-}
-.fireworks{
-  height:250px;
-  position:relative;
-}
-.firework{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  position:absolute;
-  animation:burst 1s infinite;
-}
-@keyframes burst{
-  0%{transform:translateY(0);opacity:1;}
-  50%{transform:translateY(-120px);opacity:.6;}
-  100%{transform:translateY(0);opacity:0;}
-}
-</style>
-</head>
-
-<body>
-
-<h2 id="question"></h2>
-<div id="area"></div>
-
-<!-- FINAL CELEBRATION -->
-<div id="finalScreen">
-  <h2>🎆🎈 Animations, fireworks and balloons 🎈🎆</h2>
-  <div class="fireworks" id="fw"></div>
-  <button onclick="showAnswers()">See all the answers 💌</button>
-</div>
-
-<!-- ANSWERS VIEW -->
-<div id="answersScreen">
-  <h2>💖 Our Beautiful Answers 💖</h2>
-  <div id="answersList"></div>
-  <h3 style="margin-top:30px;">Now send me the screenshot please, my love 💕</h3>
-</div>
-
 <script>
-let step=0;
-let answers=[];
+let step = 0;
+let answers = [];
 
-const flow=[
- {q:"I know I make you angry sometimes, but you make me the happiest person alive. Will you be my Valentine?",o:["Yes ❤️","Definitely yes 💖"]},
- {q:"I love you so much ❤️",o:["I love you too 💕","I love you more 💞"]},
- {q:"Happy Rose Day 🌹 How do I make you feel every day?",o:["Loved 💖","Special ✨"]},
- {q:"What is your favorite memory with me?",input:true},
- {q:"Do you feel safe and loved with me?",o:["Always 💕","Every moment ❤️"]},
- {q:"What song reminds you of us?",input:true},
- {q:"Do you remember when you first realized you loved me?",input:true},
- {q:"I promise to take care of you every single day. Do you believe me?",o:["Yes 💖","With my whole heart 💕"]},
- {q:"What is one thing I do that makes you smile instantly?",input:true},
- {q:"Do you see us growing old together?",o:["Forever ❤️","Always 💞"]},
- {q:"What do you love most about us?",input:true},
- {q:"Do you feel proud to call me yours?",o:["Yes ❤️","Every day 💕"]},
- {q:"What is your dream future with me?",input:true},
- {q:"Do you feel my love even in silence?",o:["Always 💖","Yes 💕"]},
- {q:"If I was holding your hand right now, what would you say?",input:true},
- {q:"Do you trust me with your heart?",o:["Completely ❤️","Forever 💖"]},
- {q:"What makes our relationship special?",input:true},
- {q:"Do you know how deeply I love you?",o:["Yes 💕","I feel it 💖"]},
- {q:"One thing you want us to always do together?",input:true},
- {q:"Last question… will you marry me?",input:true}
+const flow = [
+ {q:"I know I make you angry sometimes, but you make me the happiest person alive. Will you be my Valentine?", o:["Yes ❤️","Definitely yes 💖"]},
+ {q:"I love you so much ❤️", o:["I love you too 💕","I love you more 💞"]},
+ {q:"Happy Rose Day 🌹 How do I make you feel every day?", o:["Loved 💖","Special ✨"]},
+ {q:"What is your favorite memory with me?", input:true},
+ {q:"Do you feel safe and loved with me?", o:["Always 💕","Every moment ❤️"]},
+ {q:"What song reminds you of us?", input:true},
+ {q:"Last question… will you marry me?", input:true}
 ];
 
 function render(){
- let f=flow[step];
- document.getElementById("area").innerHTML="";
- document.getElementById("question").innerText=f.q;
+  const area = document.getElementById("area");
+  const q = document.getElementById("question");
+  area.innerHTML = "";
 
- if(f.o){
-  f.o.forEach(x=>{
-   let b=document.createElement("button");
-   b.innerText=x;
-   b.onclick=()=>choose(x);
-   area.appendChild(b);
-  });
-  area.innerHTML+=`<br><textarea id="custom" placeholder="Or write your answer 💌"></textarea><br><button onclick="submitCustom()">Submit</button>`;
- }
- else{
-  area.innerHTML=`<textarea id="txt" placeholder="Write from your heart 💖"></textarea><br><button onclick="submitInput()">Submit</button>`;
- }
+  let f = flow[step];
+  q.innerText = f.q;
+
+  if(f.o){
+    f.o.forEach(opt=>{
+      let btn = document.createElement("button");
+      btn.innerText = opt;
+      btn.onclick = () => choose(opt);
+      area.appendChild(btn);
+    });
+
+    let txt = document.createElement("textarea");
+    txt.placeholder = "Or write your answer 💌";
+    txt.id = "customInput";
+    area.appendChild(document.createElement("br"));
+    area.appendChild(txt);
+
+    let submit = document.createElement("button");
+    submit.innerText = "Submit";
+    submit.onclick = submitCustom;
+    area.appendChild(submit);
+  } 
+  else {
+    let txt = document.createElement("textarea");
+    txt.id = "textInput";
+    txt.placeholder = "Write from your heart 💖";
+    area.appendChild(txt);
+
+    let submit = document.createElement("button");
+    submit.innerText = "Submit";
+    submit.onclick = submitInput;
+    area.appendChild(submit);
+  }
 }
 
-function choose(a){
- answers.push({q:flow[step].q,a});
- step++;
- step<flow.length?render():finale();
+function choose(ans){
+  answers.push({q: flow[step].q, a: ans});
+  next();
 }
 
 function submitInput(){
- let v=txt.value.trim();
- if(!v)return alert("Please write something 💕");
- answers.push({q:flow[step].q,a:v});
- step++;
- step<flow.length?render():finale();
+  let v = document.getElementById("textInput").value.trim();
+  if(!v) return alert("Please write something 💕");
+  answers.push({q: flow[step].q, a: v});
+  next();
 }
 
 function submitCustom(){
- let v=custom.value.trim();
- if(!v)return alert("Please write something 💕");
- answers.push({q:flow[step].q,a:v});
- step++;
- step<flow.length?render():finale();
+  let v = document.getElementById("customInput").value.trim();
+  if(!v) return alert("Please write something 💕");
+  answers.push({q: flow[step].q, a: v});
+  next();
+}
+
+function next(){
+  step++;
+  if(step < flow.length) render();
+  else finale();
 }
 
 function finale(){
- question.style.display="none";
- area.style.display="none";
- finalScreen.style.display="block";
- for(let i=0;i<25;i++){
-  let f=document.createElement("div");
-  f.className="firework";
-  f.style.left=Math.random()*90+"%";
-  f.style.background=`hsl(${Math.random()*360},100%,50%)`;
-  fw.appendChild(f);
- }
+  document.getElementById("question").style.display="none";
+  document.getElementById("area").style.display="none";
+  document.getElementById("finalScreen").style.display="block";
 }
 
-function showAnswers(){
- finalScreen.style.display="none";
- answersScreen.style.display="block";
- answers.forEach(x=>{
-  answersList.innerHTML+=`
-   <div class="answerBox">
-    <b>${x.q}</b><br>
-    ❤️ ${x.a}
-   </div>`;
- });
-}
-
-window.onload=render;
+window.onload = render;
 </script>
-
-</body>
-</html>
